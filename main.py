@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from PIL import ImageFont, ImageDraw, Image
 
 def main():
     WIDTH = 100
@@ -13,18 +14,11 @@ def main():
     FILENAME = "running_text.mp4"
     CODECNAME = "vp09"
 
-    FONTSCALE = 3
-    FONT = cv2.FONT_HERSHEY_DUPLEX
-    THICKNESS = 1
-    TEXT = "it-solution.ru akapu"
-    TEXT_SIZE, _ = cv2.getTextSize(
-        TEXT,
-        FONT,
-        FONTSCALE,
-        THICKNESS
-    )
+    TEXT = "Р"
     H_PAD = 5
-    BOTTOM_PAD = 5
+    V_PAD = 5
+    FONT = ImageFont.truetype("Jura.ttf", HEIGHT - 2*V_PAD)
+    TEXT_WIDTH = int(FONT.getlength(TEXT))
 
     video = cv2.VideoWriter(
         FILENAME,
@@ -33,21 +27,25 @@ def main():
         (WIDTH, HEIGHT)
     )
 
+    total_shift = 0
+
+    if TEXT_WIDTH > (WIDTH - 2*H_PAD):
+        total_shift = WIDTH - TEXT_WIDTH - 2*H_PAD
+
     for i in range(TOTAL_FRAMES):
-        img = np.zeros((WIDTH, HEIGHT, LAYERS), dtype=np.uint8)
+        img_pil = Image.new("RGB", (WIDTH, HEIGHT))
+        img_drw = ImageDraw.Draw(img_pil)
 
-        shift = int((i / (TOTAL_FRAMES - 1)) * (WIDTH - TEXT_SIZE[0] - 2*H_PAD))
-
-        cv2.putText(
-            img,
-            TEXT,
-            (H_PAD + shift, HEIGHT - BOTTOM_PAD),
-            FONT,
-            FONTSCALE,
-            (255, 255, 255),
-            THICKNESS,
-            cv2.FILLED
+        shift = int((i / (TOTAL_FRAMES - 1)) * total_shift)
+        
+        img_drw.text(
+                (H_PAD + shift, V_PAD), 
+                TEXT,
+                font=FONT,
+                fill=(255, 255, 255)
         )
+
+        img = np.array(img_pil)
 
         video.write(img)
 
