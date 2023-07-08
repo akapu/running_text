@@ -1,8 +1,25 @@
+import sys
 import cv2
 import numpy as np
 from PIL import ImageFont, ImageDraw, Image
 
 def main():
+    usage = "Usage: ./python3 running_text.py [text, [output_filename.mp4]]"
+
+    if len(sys.argv) > 3:
+        print("Too many arguments")
+        print(usage)
+        return
+
+    if len(sys.argv) == 3 and not sys.argv[2].endswith(".mp4"):
+        print("The name of video file should ends with .mp4")
+        print(usage)
+        return
+
+    create_video(*sys.argv[1:])
+
+
+def create_video(TEXT = "Sample text", FILENAME = "running_text.mp4"):
     WIDTH = 100
     HEIGHT = 100
     LAYERS = 3
@@ -11,10 +28,8 @@ def main():
     DURATION = 3
     TOTAL_FRAMES = DURATION * FPS
 
-    FILENAME = "running_text.mp4"
     CODECNAME = "vp09"
 
-    TEXT = "Р"
     H_PAD = 5
     V_PAD = 5
     FONT = ImageFont.truetype("Jura.ttf", HEIGHT - 2*V_PAD)
