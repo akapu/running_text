@@ -3,6 +3,7 @@ Install all the requirements specified in requirements.txt with:
 ```bash
 pip install -r requirements.txt
 ```
+Also requires ffmpeg installed.
 Usage:
 ```bash
 python3 running_text.py [text, [output_filename.mp4]]
