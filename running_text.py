@@ -47,9 +47,18 @@ def create_video(TEXT = "Sample text", FILENAME = "running_text.mp4"):
     if TEXT_WIDTH > (WIDTH - 2*H_PAD):
         total_shift = WIDTH - TEXT_WIDTH - 2*H_PAD
 
+
+    img_pil = Image.new("RGB", (WIDTH, HEIGHT))
+    img_drw = ImageDraw.Draw(img_pil)
+
+    img = np.array(img_pil)
+
     for i in range(TOTAL_FRAMES):
-        img_pil = Image.new("RGB", (WIDTH, HEIGHT))
-        img_drw = ImageDraw.Draw(img_pil)
+        img_drw.rectangle(
+                [(0, 0), (WIDTH, HEIGHT)], 
+                fill=(0, 0, 0),
+                outline=(0, 0, 0)
+        )
 
         shift = int((i / (TOTAL_FRAMES - 1)) * total_shift)
         
@@ -60,7 +69,7 @@ def create_video(TEXT = "Sample text", FILENAME = "running_text.mp4"):
                 fill=(255, 255, 255)
         )
 
-        img = np.array(img_pil)
+        np.copyto(img, img_pil)
 
         video.write(img)
 
